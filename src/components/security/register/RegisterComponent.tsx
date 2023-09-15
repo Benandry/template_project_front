@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { ISubscription } from "../../../interfaces/ISubscription";
 import "./registerComponent.css";
 import { postUser } from "../../../helpers/PostUser";
-import { useMutation } from "react-query";
+import { passwordValidator } from "../../../helpers/ValidationPassword";
 
 const RegisterComponent = () => {
   // State for data
@@ -25,14 +25,12 @@ const RegisterComponent = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const postNewData = await postUser(userDataRegister);
-    const mutation = useMutation(postNewData);
     try {
-      await mutation.mutateAsync(postNewData);
-      // La mutation s'est bien passée, vous pouvez gérer la suite ici
+      if (passwordValidator(userDataRegister)) {
+        await postUser(userDataRegister);
+      }
     } catch (error) {
-      // Gérez les erreurs ici
-      console.log("error  sdqsdqsdqs error", error);
+      console.log(error);
     }
   };
   return (
