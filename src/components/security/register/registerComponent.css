@@ -1,0 +1,11 @@
+.register__screen__content {
+  display: grid;
+  place-items: center; /* Centre horizontalement et verticalement */
+  width: 100vw;
+  margin-top: 4rem;
+}
+
+.register__field {
+  margin: 1rem;
+  width: 100%;
+}
