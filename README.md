@@ -1,4 +1,4 @@
-# This is template for all project react with typescript
+## This is template for all project react with typescript vite
 
 <!--
 ![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](https://raw.githubusercontent.com/TheDudeThatCode/TheDudeThatCode/master/Assets/Developer.gif) -->
@@ -9,7 +9,14 @@
 
 <!-- ![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](https://raw.githubusercontent.com/TheDudeThatCode/TheDudeThatCode/master/Assets/Developer.gif) -->
 
-> [!NOTE]
-> THIS REPOSITORY IS EMPTY BUT CLONE TO CREATE NEW PROJECT
+## Stack
 
-## nandry
+- React
+- TypeScript
+
+## Starting
+
+    mkdir frontend/ && cd frontend/
+    git clone https://github.com/Benandry/template_project_front.git ./
+    npm install --save
+    npm run dev
