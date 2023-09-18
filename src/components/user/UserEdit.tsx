@@ -1,47 +1,67 @@
-import { ChangeEvent, FormEvent, useState } from "react";
-import { ISubscription } from "../../../interfaces/Iuser/ISubscription";
-import "./registerComponent.css";
-import { postUser } from "../../../helpers/PostUser";
-import { passwordValidator } from "../../../helpers/ValidationPassword";
-import { useNavigate } from "react-router-dom";
+import { FC, useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { appQuery } from "../../Hooks/Hooks";
+import { IUserData } from "../../interfaces/Iuser/IUserData";
+import { formttedDate } from "../../helpers/formateDate";
+import axios from "axios";
+import { getToken } from "../../helpers/getToken";
 
-const RegisterComponent = () => {
-  // State for data
-
-  const [userDataRegister, setUserDataRegister] = useState<ISubscription>({
+const UserEdit: FC = () => {
+  const [_user, setUser] = useState<IUserData>({
+    _id: "",
     first_name: "",
     last_name: "",
     username: "",
-    birth: new Date(),
+    birth: "",
     gender: "",
     email: "",
-    password: "",
-    password_confirmation: "",
     role: "",
   });
+  const { id } = useParams();
   const navigate = useNavigate();
+
+  if (id) {
+    const fetchDataUser = async () => {
+      const data = await appQuery("GET", `user/${id}`);
+      setUser(data);
+    };
+    useEffect(() => {
+      fetchDataUser();
+    }, []);
+  }
 
   const handleChangeField = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserDataRegister({ ...userDataRegister, [name]: value });
+    setUser({ ..._user, [name]: value });
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("userDataRegister", userDataRegister);
     try {
-      if (passwordValidator(userDataRegister)) {
-        const data = await postUser(userDataRegister);
-        console.log(data);
+      const api_url: string = `http://localhost:9000/user/edit/${id}`;
+      const token: string | null = getToken();
+      const response = await fetch(api_url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(_user),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
         navigate("/home");
       } else {
-        alert("Password must be at least 8 characters long");
+        alert("error");
       }
     } catch (error) {
       console.log(error);
       alert("Missing password");
     }
   };
+
   return (
     <form className="register__form" onSubmit={handleSubmit}>
       <div className="register__field">
@@ -50,7 +70,7 @@ const RegisterComponent = () => {
           type="text"
           placeholder="Nom "
           name="first_name"
-          value={userDataRegister.first_name}
+          value={_user?.first_name}
           onChange={handleChangeField}
           required
         />
@@ -62,7 +82,7 @@ const RegisterComponent = () => {
           className="register__input"
           placeholder="Prenom"
           name="last_name"
-          value={userDataRegister.last_name}
+          value={_user?.last_name}
           onChange={handleChangeField}
           required
         />
@@ -74,7 +94,7 @@ const RegisterComponent = () => {
           className="register__input"
           placeholder="Pseudo"
           name="username"
-          value={userDataRegister.username}
+          value={_user?.username}
           onChange={handleChangeField}
           required
         />
@@ -87,7 +107,7 @@ const RegisterComponent = () => {
           className="register__input"
           placeholder="Date de naissance "
           name="birth"
-          value={userDataRegister.birth as string}
+          value={formttedDate(_user?.birth)}
           onChange={handleChangeField}
           required
         />
@@ -100,7 +120,7 @@ const RegisterComponent = () => {
           className="register__input"
           placeholder="Genre"
           name="gender"
-          value={userDataRegister.gender}
+          value={_user?.gender}
           onChange={handleChangeField}
           required
         />
@@ -113,7 +133,7 @@ const RegisterComponent = () => {
           className="register__input"
           placeholder="Email"
           name="email"
-          value={userDataRegister.email}
+          value={_user?.email}
           onChange={handleChangeField}
           required
         />
@@ -126,39 +146,13 @@ const RegisterComponent = () => {
           className="register__input"
           placeholder="Role"
           name="role"
-          value={userDataRegister.role}
+          value={_user?.role}
           onChange={handleChangeField}
           required
         />
       </div>
 
-      <div className="register__field">
-        <i className="login__icon fas fa-lock"></i>
-        <input
-          type="password"
-          className="register__input"
-          placeholder="Mot de passe"
-          name="password"
-          value={userDataRegister.password}
-          onChange={handleChangeField}
-          required
-        />
-      </div>
-
-      <div className="register__field">
-        <i className="login__icon fas fa-lock"></i>
-        <input
-          type="password"
-          className="register__input"
-          placeholder="Confirmation de mot de passe"
-          name="password_confirmation"
-          value={userDataRegister.password_confirmation}
-          onChange={handleChangeField}
-          required
-        />
-      </div>
-
-      <button className="button register__submit">
+      <button className="btn">
         <span className="button__text">Enregister</span>
         <i className="button__icon fas fa-chevron-right"></i>
       </button>
@@ -166,4 +160,4 @@ const RegisterComponent = () => {
   );
 };
 
-export default RegisterComponent;
+export default UserEdit;

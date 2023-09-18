@@ -1,24 +1,57 @@
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, useState, useEffect } from "react";
 import "./loginComponent.css";
-import { UserLogin } from "../../../interfaces/IUserLogin";
+import {
+  IUserDataInfo,
+  IUserLogin,
+} from "../../../interfaces/Iuser/IUserLogin";
+import { postLogin } from "../../../helpers/PostLogin";
+import { save } from "../../../helpers/SaveDataUser";
+import { useNavigate } from "react-router-dom";
+import { removeSession } from "../../../helpers/removeSession";
+import { Link } from "react-router-dom";
 
 const LoginComponent: FC = () => {
   // State for login
-  const [userData, setUserData] = useState<UserLogin>({
+  const [userData, setUserData] = useState<IUserLogin>({
     email: "",
     password: "",
   });
 
+  const navigate = useNavigate();
   const handleChangeField = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUserData({ ...userData, [name]: value });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     // Vous pouvez accéder aux données dans formData ici et les soumettre au serveur ou les traiter localement.
-    console.log(userData);
+    try {
+      const data = await postLogin(userData);
+      const { username, email, token } = data;
+      const userInfo: IUserDataInfo = {
+        username,
+        email,
+        token,
+      };
+
+      const saved = save(userInfo);
+
+      if (saved) {
+        alert(saved);
+        const dataInfo = sessionStorage.getItem("dataUser");
+        console.log("dataInfo", dataInfo);
+        navigate("/home");
+      }
+    } catch (error) {
+      alert("Errerur");
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    removeSession();
+  }, []);
 
   return (
     <div className="container">
@@ -58,6 +91,12 @@ const LoginComponent: FC = () => {
               <a href="#" className="social-login__icon fab fa-instagram"></a>
               <a href="#" className="social-login__icon fab fa-facebook"></a>
               <a href="#" className="social-login__icon fab fa-twitter"></a>
+            </div>
+          </div>
+          <div className="social-login">
+            <h3>log in via</h3>
+            <div className="social-icons">
+              <Link to="/register"> Register</Link>
             </div>
           </div>
         </div>
