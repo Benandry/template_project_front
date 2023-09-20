@@ -8,7 +8,6 @@ import { postLogin } from "../../../helpers/PostLogin";
 import { save } from "../../../helpers/SaveDataUser";
 import { useNavigate } from "react-router-dom";
 import { removeSession } from "../../../helpers/removeSession";
-import { Link } from "react-router-dom";
 
 const LoginComponent: FC = () => {
   // State for login
@@ -67,6 +66,7 @@ const LoginComponent: FC = () => {
                 name="email"
                 value={userData.email}
                 onChange={handleChangeField}
+                required
               />
             </div>
             <div className="login__field">
@@ -78,6 +78,7 @@ const LoginComponent: FC = () => {
                 value={userData.password}
                 name="password"
                 onChange={handleChangeField}
+                required
               />
             </div>
             <button className="button login__submit">
@@ -95,9 +96,6 @@ const LoginComponent: FC = () => {
           </div>
           <div className="social-login">
             <h3>log in via</h3>
-            <div className="social-icons">
-              <Link to="/register"> Register</Link>
-            </div>
           </div>
         </div>
         <div className="screen__background">

@@ -3,6 +3,7 @@ import "./homeContainer.css";
 import { Link } from "react-router-dom";
 import { appQuery } from "../../Hooks/Hooks";
 import { IUserData } from "../../interfaces/Iuser/IUserData";
+import Thumbnail from "./Thumbnail";
 
 const HomeContainer: React.FC = () => {
   const [allUsers, setAllUsers] = useState<IUserData[]>();
@@ -16,7 +17,12 @@ const HomeContainer: React.FC = () => {
   }, []);
 
   const deleteDataUser = async (_id: string) => {
-    console.log("_id", _id);
+    if (confirm("Are you sure you want to delete")) {
+      await appQuery("DELETE", `user/delete/${_id}`);
+      fetchDataUser();
+    } else {
+      console.log("Annulé");
+    }
   };
   return (
     <div className="container_home">
@@ -32,8 +38,10 @@ const HomeContainer: React.FC = () => {
         <table>
           <thead>
             <tr>
+              <th>Image </th>
               <th>Nom </th>
               <th>Prenom </th>
+              <th>Email </th>
               <th>Pseudo </th>
               <th>Date de naissance </th>
               <th>Role </th>
@@ -44,13 +52,31 @@ const HomeContainer: React.FC = () => {
             {allUsers &&
               allUsers.map(
                 (
-                  { _id, username, last_name, first_name, birth, role },
+                  {
+                    _id,
+                    imageUrl,
+                    username,
+                    last_name,
+                    first_name,
+                    birth,
+                    role,
+                    email,
+                  },
                   index
                 ) => {
                   return (
                     <tr key={index}>
+                      <td>
+                        {" "}
+                        <Thumbnail
+                          src={imageUrl}
+                          // src="https://images.pexels.com/photos/1329711/pexels-photo-1329711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                          alt="Thumbnail image"
+                        />
+                      </td>
                       <td> {first_name}</td>
                       <td> {last_name}</td>
+                      <td> {email}</td>
                       <td> {username}</td>
                       <td>
                         {" "}

@@ -7,4 +7,5 @@ export interface IUserData {
   gender: string;
   email: string;
   role: string;
+  imageUrl: string;
 }

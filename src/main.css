@@ -1,8 +1,18 @@
-/* .main_container {
-  display: grid;
-  place-items: center;
-  margin: 2rem;
-} */
+:root {
+  --color-text: #4c489d;
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
 a {
   text-decoration: none;
+}
+.img__thumbnail {
+  /* border-radius: 4px; */
+  box-shadow: 0 0 2px 1px rgba(2, 12, 16, 0.5);
+  padding: 5px;
+  width: 6rem;
 }
